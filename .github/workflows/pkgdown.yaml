@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "pkgdown"))
-          remotes::install_deps()
+          remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       - name: Install package
         run: R CMD INSTALL .
