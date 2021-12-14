@@ -1,0 +1,144 @@
+---
+title: "Running ANEVA-DOT"
+output: 
+  rmarkdown::html_vignette:
+    fig_width: 6
+vignette: >
+  %\VignetteIndexEntry{Running ANEVA-DOT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r nomnoml, include=FALSE}
+library(nomnoml)
+webshot::install_phantomjs()
+```
+
+ANEVA-DOT is a tool for identifying genes that vary in dosage from reference population. It takes in ASE-like data and returns ... The test is implemented in the [{ANEVADOT} R package](https://github.com/PejLab/ANEVA-DOT) provided by the [PejLab](https://pejlab.org).
+
+{dottools} provides utilities to help prepare input ASE data for ANEVA-DOT. In addition, it also provides a wrapper script for running ANEVA-DOT in a standard, reproducible manner. The wrapper script is installed alongside {dottools} and can be found by calling `dottools::dot_script`
+
+```{r dot_script}
+dottools::dot_script()
+```
+
+You can add this to your PATH by running (on macOS and Linux)
+
+```{bash}
+# In the terminal
+export PATH=$(Rscript -e "cat(dirname(dottools::dot_script()))"):$PATH
+which aneva-dot.R
+```
+
+<div class="panel panel-danger">
+  <div class="panel-heading">Prerequisites</div>
+  <div class="panel-body">
+  The ANEVA-DOT wrapper script requires the {ANEVADOT}, {dottools}, and {argparser} packages, along with their dependencies. These prerequisites can be satisfied by installing {dottools} with suggested packages
+
+```{r prereqs, eval=FALSE}
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+remotes::install_github("LappalainenLab/dottools", dependencies = TRUE)
+```
+  </div>
+</div>
+
+## ANEVA-DOT Pipeline
+
+The most basic input for ANEVA-DOT consists of ASE data, from ASEReadCounter or phASER Gene AE, and a set of reference Vg estimates.
+
+[ANEVA-DOT references](https://github.com/PejLab/ANEVA-DOT_reference_datasets)
+
+```{nomnoml aneva_dot_pipeline, echo=FALSE, fig.height=8}
+#direction: down
+#.data: visual=input fill=limegreen
+#.optin: visual=input dashed fill=limegreen
+#.optrun: visual=rhomb dashed fill=mistyrose
+#.run: visual=rhomb fill=lightskyblue
+#.dot: visual=receiver fill=lightsalmon
+[<data>ASE Data]
+[<data>Reference Vgs]
+[<optin>Gene ID/Symbol Map]
+[<optrun>Blacklist Filtering]
+[<optrun>Symbol Mapping]
+[<optrun>Filter Homozygous Sites]
+[<run>Filter by Count Threshold]
+[<optrun>Filter Tests|
+  - sites prone to mapping bias
+  - regions of low mappability
+  - monoallelic sites
+]
+[<dot>ANEVA-DOT]
+
+[ASE Data] -> [Symbol Mapping]
+[ASE Data] -> [Filter Homozygous Sites]
+[ASE Data] -> [Filter by Count Threshold]
+[Gene ID/Symbol Map] -> [Symbol Mapping]
+[Symbol Mapping] -> [Filter Homozygous Sites]
+[Filter Homozygous Sites] -> [Filter by Count Threshold]
+[Filter by Count Threshold] -> [Filter Tests]
+[Filter by Count Threshold] -> [ANEVA-DOT]
+[Filter Tests] -> [ANEVA-DOT]
+[Reference Vgs] -> [ANEVA-DOT]
+```
+
+## Minimal Workflow
+
+- Read data
+- Filter by count threshold
+- Vg Preparation
+- ANEVA-DOT
+
+## Data Transformation
+
+### Symbol Mapping
+
+### Blacklist Removal
+
+### Vg Preparation
+
+## Filtering
+
+{dottools} can perform various filters prior to running ANEVA-DOT to ensure optimal data is being input to the test
+
+warning columns:
+
+  - `TRUE` or `FALSE`
+  - `r as.integer(x = TRUE)` or `r as.integer(x = FALSE)`
+
+### Homozygous Sites
+
+Remove homozygous sites
+
+- input contains `HOMOZYGOUS_WARNING` column 
+- determine homozygous/heterozygous status from `genotype` column
+- determine homozygous/heterozygous status from reference and alternate counts
+- `?dottools::homozygous_test`
+
+### Regions of Low Mapability
+
+Remove regions of low mapability
+
+- `MAP_WARNING`
+- BED file with low mapability regions `?dottools::mapability_test`
+
+### Sites Prone to Mapping Bias
+
+- `BIAS_WARNING`
+- VCF with sites `?dottools::bias_test`
+
+### Monoallelic Sites
+
+- `GENOTYPE_WARNING`
+- total, ref, and other counts `?dottools::monoallelic_test`

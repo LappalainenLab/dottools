@@ -1,0 +1,12 @@
+^renv$
+^renv\.lock$
+^dottools\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^README\.Rmd$
+^.*\.txt$
+^.*\.vcf$
+^.*\.bed$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

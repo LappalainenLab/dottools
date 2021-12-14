@@ -1,0 +1,33 @@
+Package: dottools
+Title: Helper Functions for ANVEA-DOT
+Version: 0.0.0.9000
+Authors@R: c(
+  person(given = 'Paul', family = 'Hoffman', email = 'phoffman@nygenome.org', role = c('aut', 'cre'), comment = c(ORCID = '0000-0002-7693-8957'))
+  )
+Description: What the package does (one paragraph).
+URL: https://github.com/LappalainenLab/dottools
+BugReports: https://github.com/LappalainenLab/dottools/issues
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+Remotes:
+    PejLab/ANEVA-DOT
+Imports:
+    ANEVADOT,
+    data.table,
+    dplyr,
+    pbapply,
+    stats
+Suggests:
+    knitr,
+    argparser,
+    grDevices,
+    tools,
+    rmarkdown,
+    nomnoml,
+    webshot
+Collate:
+    'zzz.R'
+    'dottests.R'
+    'input.R'

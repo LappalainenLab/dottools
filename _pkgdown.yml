@@ -1,0 +1,25 @@
+destination: docs
+
+development:
+  mode: auto
+
+template:
+  params:
+    bootswatch: flatly
+
+navbar:
+  structure:
+    left: [reference, intro]
+    right: github
+
+reference:
+  - title: Data Input
+  - contents:
+    - has_concept("ase_input")
+    - has_concept("data_input")
+  - title: DOT Tests
+  - contents:
+    - has_concept("filter_test")
+  - title: Utilities
+  - contents:
+    - lacks_concepts(c("ase_input", "data_input", "filter_test"))
