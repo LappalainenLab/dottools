@@ -28,6 +28,8 @@ jobs:
           install.packages(c("remotes", "pkgdown"))
           remotes::install_deps()
         shell: Rscript {0}
+      - name: Install package
+        run: R CMD INSTALL .
       - name: Deploy package
         run: |
           git config --local user.email "actions@github.com"
